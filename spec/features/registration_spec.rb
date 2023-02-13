@@ -27,6 +27,21 @@ RSpec.describe "User Registration" do
 
     expect(current_path).to eq(register_path)
     expect(page).to have_content("Email has already been taken")
-    
+  end
+
+  it 'does not create a user if passwords dont match' do
+
+    visit register_path
+
+    expect(User.count).to eq(1)
+
+    fill_in :user_name, with: 'User One'
+    fill_in :user_email, with: 'thisisanemail@email.com'
+    fill_in :user_password,	with: 'thispassworddoesnotmatch123'
+    fill_in :user_password_confirmation, with: 'thispassisdifferent123'
+    click_button 'Create New User'
+
+    expect(User.count).to eq(1)
+    expect(page).to have_content("Passwords don't match. Are you sure you typed that correctly?")
   end
 end
