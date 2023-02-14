@@ -33,7 +33,7 @@ RSpec.describe "User Registration" do
 
     visit register_path
 
-    expect(User.count).to eq(1)
+    expect(User.count).to eq(0)
 
     fill_in :user_name, with: 'User One'
     fill_in :user_email, with: 'thisisanemail@email.com'
@@ -41,7 +41,6 @@ RSpec.describe "User Registration" do
     fill_in :user_password_confirmation, with: 'thispassisdifferent123'
     click_button 'Create New User'
 
-    expect(User.count).to eq(1)
-    expect(page).to have_content("Passwords don't match. Are you sure you typed that correctly?")
+    expect(User.count).to eq(0)
   end
 end

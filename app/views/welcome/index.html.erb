@@ -1,5 +1,12 @@
+<% if session[:user_id] == nil %>
+    <%= link_to 'Log In', '/login' %>
+<% else %>
+    <p><%= @user.name %> <%= link_to 'Log Out', '/logout' %></p>
+<% end %>
+
+
 <%= button_to "Create New User", register_path, method: :get %>
-<%= link_to 'Log In', '/login' %>
+
 <section class='existing-users'>
     <p>Existing Users: </p>
     <% @users.each do |user| %>

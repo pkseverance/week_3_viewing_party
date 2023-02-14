@@ -8,18 +8,14 @@ class UsersController <ApplicationController
     end 
 
     def create
-        if user_params[:password] == user_params[:password_confirmation]
-            user = User.create(user_params)
-            if user.save
-                redirect_to user_path(user)
-            else  
-                flash[:error] = user.errors.full_messages.to_sentence
-                redirect_to register_path
-            end 
-        else
-            flash[:error] = "Passwords don't match. Are you sure you typed that correctly?"
+        @user = User.create(user_params)
+        if @user.save
+            session[:user_id] = @user.id
+            redirect_to user_path(@user.id)
+        else  
+            flash[:error] = @user.errors.full_messages.to_sentence
             redirect_to register_path
-        end
+        end 
     end 
 
     def login_form
@@ -27,15 +23,21 @@ class UsersController <ApplicationController
     end
 
     def login_user
-        user = User.find_by(email: login_params[:email])
+        @user = User.find_by(email: login_params[:email])
 
-        if user && user.authenticate(login_params[:password])
-            flash[:success] = "Welcome, #{user.name}!"
-            redirect_to user_path(user.id)
+        if @user && @user.authenticate(login_params[:password])
+            flash[:success] = "Welcome, #{@user.name}!"
+            session[:user_id] = @user.id
+            redirect_to user_path(@user.id)
         else
             flash[:error] = "Sorry, your credentials are bad."
             render :login_form
         end
+    end
+
+    def logout_user
+        session[:user_id] = nil
+        redirect_to root_path
     end
     
     private 
